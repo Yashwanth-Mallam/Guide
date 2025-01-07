@@ -64,9 +64,6 @@ const getAllLearnerProfiles = async (req, res) => {
   }
 };
 
-// Get a single learner profile by ID
-const mongoose = require('mongoose');
-
 const getLearnerProfileById = async (req, res) => {
   try {
     const { learnerId } = req.params; // Retrieve learnerId from query parameters
@@ -74,20 +71,15 @@ const getLearnerProfileById = async (req, res) => {
     if (!learnerId) {
       return res.status(400).json({ message: "learnerId is required" }); // Return an error if learnerId is missing
     }
-
-    // Convert learnerId to ObjectId format if it's a string
-    // const learnerObjectId = mongoose.Types.ObjectId(learnerId);
-
     // Find the profile by learnerId and populate the learner field with email and fullName
     const profile = await LearnerProfile.findOne({ learner: learnerId }) // Correct query format
       .populate(
         "learner", // Reference to Learner model
         "email fullName" // Only populate these fields from the Learner model
       );
-
-    if (!profile) {
-      return res.status(404).json({ message: "Learner profile not found" });
-    }
+      if (!profile) {
+        return res.status(404).json({ message: "Learner profile not found" });
+      }
 
     res.status(200).json({
       message: "Learner profile fetched successfully",
@@ -106,18 +98,18 @@ const getLearnerProfileById = async (req, res) => {
 // Update a learner profile
 const updateLearnerProfile = async (req, res) => {
   try {
-    const { id } = req.params;
-    const updatedProfile = await LearnerProfile.findByIdAndUpdate(
-      id,
+    const { learnerId } = req.params;
+    const profile = await LearnerProfile.findOneAndUpdate(
+      { learner: learnerId }, // Correct query format
       req.body,
-      { new: true }
+      { new: true } // Return the updated document
     );
-    if (!updatedProfile) {
+    if (!profile) {
       return res.status(404).json({ message: "Learner profile not found" });
     }
     res.status(200).json({
       message: "Learner profile updated successfully",
-      data: updatedProfile,
+      data: profile,
     });
   } catch (error) {
     res.status(500).json({
@@ -126,6 +118,7 @@ const updateLearnerProfile = async (req, res) => {
     });
   }
 };
+
 
 // Delete a learner profile
 const deleteLearnerProfile = async (req, res) => {

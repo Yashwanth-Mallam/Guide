@@ -3,14 +3,8 @@ import Course from '../models/courseModel';
 // Get all courses
 export async function getAllCourses(req, res) {
   try {
-    console.log('getAllCourses function is being called'); // Log to verify route is hit
-
     // Fetch courses from the database
     const courses = await Course.find();
-
-    // Log the courses to the terminal (console)
-    console.log('Fetched courses:', courses);
-
     // Send the courses as a response
     res.json(courses);
   } catch (error) {

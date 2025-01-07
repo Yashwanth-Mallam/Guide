@@ -19,7 +19,7 @@ router.get("/api/learnerprofiles", getAllLearnerProfiles);
 router.get("/api/learnerprofiles/:learnerId", getLearnerProfileById);
 
 // Route to update a learner profile by ID
-router.put("/api/learnerprofiles/:id", updateLearnerProfile);
+router.put("/api/learnerprofiles/:learnerId", updateLearnerProfile);
 
 // Route to delete a learner profile by ID
 router.delete("/api/learnerprofiles/:id", deleteLearnerProfile);

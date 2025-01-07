@@ -6,6 +6,7 @@ const API_URL = "http://localhost:4000"; // Update with your backend base URL
 export const createLearnerProfileAPI = async (profileData) => {
   try {
     await axios.post(`${API_URL}/api/learnerprofiles`, profileData);
+        return response.data;
   } catch (error) {
     console.error("Error creating learner profile:", error.message);
     throw error;
@@ -30,13 +31,6 @@ export const getLearnerProfileByIdAPI = async (learnerId) => {
     const response = await axios.get(
       `${API_URL}/api/learnerprofiles/${learnerId}`
     );
-    
-    // Check if response is successful and return the profile data
-    if (response.status === 200) {
-      return response.data;
-    } else {
-      throw new Error(`Failed to fetch profile, status code: ${response.status}`);
-    }
   } catch (error) {
     // Improved error handling with more details and fallback error message
     console.error(
@@ -49,16 +43,16 @@ export const getLearnerProfileByIdAPI = async (learnerId) => {
 
 
 // Update a learner profile by ID
-export const updateLearnerProfileAPI = async (id, updatedData) => {
+export const updateLearnerProfileAPI = async (learnerId, profile) => {
   try {
     const response = await axios.put(
-      `${API_URL}/api/learnerprofiles/${id}`,
-      updatedData
+      `${API_URL}/api/learnerprofiles/${learnerId}`,
+      profile
     );
     return response.data;
   } catch (error) {
     console.error(
-      `Error updating learner profile with ID ${id}:`,
+      `Error updating learner profile with ID ${learnerId}:`,
       error.message
     );
     throw error;
