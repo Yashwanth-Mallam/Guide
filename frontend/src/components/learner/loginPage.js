@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { loginLearnerAPI } from "../../utils/api/learnerApi"; // Import the API function
+import { loginLearnerAPI, getLearnerByIdAPI } from "../../utils/api/learnerApi"; // Import the API function
 import { useNavigate } from "react-router-dom";
-import { Spinner } from "@nextui-org/react"; // Optional, but if you want to use a loading spinner
+import { Spinner } from "@nextui-org/react"; // Optional, for loading spinner
+import axios from "axios";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -12,30 +13,34 @@ const LoginPage = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setIsLoading(true); // Set loading to true when login starts
+    setIsLoading(true);
 
     try {
-      // Call the loginLearnerAPI function to perform the login
       const data = await loginLearnerAPI(email, password);
+      console.log("User Data:", data); // Log the response
 
-      // Check if the response contains the learner ID
-      if (data && data.learnerId) {
-        // Store the learner ID in localStorage
-        localStorage.setItem("learnerId", data.learnerId);
+      if (data && data.token) {
+        localStorage.setItem("authToken", data.token); // Store token in localStorage
+        console.log("Token:", data.token);
+        console.log("Login successful");
+        // Check if the user has a profile
+        const learnerData = await getLearnerByIdAPI(data.learnerId); // Fetch learner by ID
+        console.log("Learner Data:", learnerData);
+        console.log("hasProfle:", learnerData.hasProfile);
 
-        // Log successful login
-        console.log("Login Successful");
-        // Redirect to the learner dashboard
-        navigate("/LearnerDashBoard");
+        if (learnerData.hasProfile) {
+          navigate("/LearnerDashBoard"); // Navigate after successful login and has profile
+        } else {
+          navigate("/CreateProfilePage"); // Navigate to create profile page
+        }
       } else {
-        // If no learner ID in the response, set an error
-        setError("Invalid email or password");
+        throw new Error("No token received");
       }
     } catch (error) {
-      // Handle the error if the login fails
+      console.error("Error during login:", error); // Log any API call errors
       setError("Invalid email or password");
     } finally {
-      setIsLoading(false); // Set loading to false after the API call
+      setIsLoading(false);
     }
   };
 

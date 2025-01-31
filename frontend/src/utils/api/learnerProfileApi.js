@@ -1,12 +1,12 @@
 import axios from "axios";
-
+import { jwtDecode } from "jwt-decode";
 const API_URL = "http://localhost:4000"; // Update with your backend base URL
 
 // Create a new learner profile
 export const createLearnerProfileAPI = async (profileData) => {
   try {
     await axios.post(`${API_URL}/api/learnerprofiles`, profileData);
-        return response.data;
+    return response.data;
   } catch (error) {
     console.error("Error creating learner profile:", error.message);
     throw error;
@@ -25,22 +25,42 @@ export const getAllLearnerProfilesAPI = async () => {
 };
 
 // Get a specific learner profile by ID
-export const getLearnerProfileByIdAPI = async (learnerId) => {
+// Get a specific learner profile by ID
+export const getLearnerProfileByIdAPI = async () => {
   try {
-    // Ensure the learnerId is passed correctly in the URL
+    // Retrieve the authentication token from local storage
+    const token = localStorage.getItem("authToken");
+
+    if (!token) {
+      throw new Error("Token not found in local storage");
+    }
+
+    // Decode the token to extract the ID
+    const decodedToken = jwtDecode(token);
+
+    const learnerId = decodedToken.id;
+
+    // Set the Authorization header with the token
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+
+    // Fetch the learner profile
     const response = await axios.get(
-      `${API_URL}/api/learnerprofiles/${learnerId}`
+      `${API_URL}/api/learnerprofiles/${learnerId}`,
+      {
+        headers,
+      }
     );
+
+    return response.data;
   } catch (error) {
-    // Improved error handling with more details and fallback error message
-    console.error(
-      `Error fetching learner profile with ID ${learnerId}:`,
-      error.response ? error.response.data : error.message
-    );
-    throw error; // Rethrow the error so it can be handled by the calling code
+    // Handle the error
+    console.error("Error fetching learner profile:", error.message);
+    throw error;
   }
 };
-
+/* global response */ // Add this comment
 
 // Update a learner profile by ID
 export const updateLearnerProfileAPI = async (learnerId, profile) => {

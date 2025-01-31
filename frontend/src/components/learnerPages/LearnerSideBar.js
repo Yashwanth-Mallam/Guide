@@ -38,19 +38,18 @@ const DashboardSidebar = ({ selectedSection, setSelectedSection }) => {
         ))}
         {/* Logout Button */}
         {/* Logout Button */}
-<div className="mt-4">
-  <button
-    auto
-    onClick={() => {
-      localStorage.removeItem('learnerId'); // Remove learnerId from localStorage
-      navigate("/login"); // Navigate to login page
-    }}
-    className="w-full flex justify-start px-4 py-2 text-white bg-red-600 hover:bg-red-700 rounded-md"
-  >
-    <IconLogout />
-  </button>
-</div>
-
+        <div className="mt-4">
+          <button
+            auto
+            onClick={() => {
+              localStorage.removeItem("learnerId"); // Remove learnerId from localStorage
+              navigate("/login"); // Navigate to login page
+            }}
+            className="w-full flex justify-start px-4 py-2 text-white bg-red-600 hover:bg-red-700 rounded-md"
+          >
+            <IconLogout />
+          </button>
+        </div>
       </SidebarBody>
     </Sidebar>
   );

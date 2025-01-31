@@ -8,9 +8,9 @@ import {
   updateLearner,
   deleteLearner,
 } from "../controllers/learnerController";
-
+// import generateTokenOnLogin from "../controllers/authController";
 // GET /learners/:id
-router.get("/:id", getLearnerById);
+router.get("/api/learner/:id", getLearnerById);
 
 // GET /learners
 router.get("/", getAllLearners);

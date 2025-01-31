@@ -18,6 +18,10 @@ const learnerModel = new Schema({
     type: String,
     required: true,
   },
+  hasProfile: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 // Create the Learner model based on the schema

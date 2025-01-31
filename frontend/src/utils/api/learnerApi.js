@@ -11,19 +11,39 @@ export const createLearnersAPI = async (learnerData) => {
     throw error;
   }
 };
-
 // API call to login learner
-export async function loginLearnerAPI(email, password) {
+export const loginLearnerAPI = async (email, password) => {
   try {
-    const response = await axios.post(`${API_URL}/api/learner/login`, {
-      email,
-      password,
+    const response = await fetch(`${API_URL}/api/learner/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
     });
-    return response.data; // This should return the data (token, etc.)
+
+    // Check if the response is successful
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Failed to login");
+    }
+
+    // Parse the response JSON
+    const data = await response.json();
+
+    // Extract the relevant fields from the backend response
+    const { token, learnerId, email: learnerEmail, fullName } = data;
+
+    // Return the parsed data
+    return {
+      token,
+      learnerId,
+      learnerEmail,
+      fullName,
+    };
   } catch (error) {
-    throw new Error(error.response?.data?.message || "Login failed");
+    console.error("Login API Error:", error.message || error);
+    throw error;
   }
-}
+};
 
 // // Fetch all learners
 // export const getAllLearnersAPI = async () => {
@@ -36,16 +56,16 @@ export async function loginLearnerAPI(email, password) {
 //   }
 // };
 
-// // Fetch a specific learner by ID
-// export const getLearnerByIdAPI = async (learnerId) => {
-//   try {
-//     const response = await axios.get(`${API_URL}/${learnerId}`);
-//     return response.data; // Return the learner data
-//   } catch (error) {
-//     console.error("Error fetching learner:", error);
-//     throw error;
-//   }
-// };
+// Fetch a specific learner by ID
+export const getLearnerByIdAPI = async (id) => {
+  try {
+    const response = await axios.get(`${API_URL}/api/learner/${id}`);
+    return response.data; // Return the learner data
+  } catch (error) {
+    console.error("Error fetching learner:", error);
+    throw error;
+  }
+};
 
 // // Update learner details
 // export const updateLearnerAPI = async (authToken, learnerId, updatedData) => {

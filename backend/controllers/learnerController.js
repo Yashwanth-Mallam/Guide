@@ -1,8 +1,8 @@
 import learnerModel from "../models/learnerModel";
 import bcrypt from "bcryptjs";
-// import jwt from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 require("dotenv").config();
-// const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_SECRET = process.env.JWT_SECRET;
 
 // Get all learners
 export async function getAllLearners(req, res) {
@@ -55,14 +55,26 @@ export async function loginLearner(req, res) {
       return res.status(401).json({ message: "Invalid email or password" });
     }
 
-    // If login is successful, return learner data (without JWT)
-    res.status(200).json({
+    // If login is successful, return learner data (with JWT)
+    // Generate JWT token
+    const secretKey = process.env.JWT_TOKEN_SECRET_KEY; // Secret key for signing the JWT
+    const token = jwt.sign(
+      { id: learner._id, fullName: learner.fullName, email: learner.email }, // Payload with learner's details
+      secretKey, // Secret key for signing the token
+      { expiresIn: "24h" } // Set token expiration time
+    );
+
+    // Return learner data along with the token
+    return res.status(200).json({
       status: true,
-      learnerId: learner._id, // You can return the learner's ID instead
-      email: learner.email, // Or any other relevant data you want to return
+      token, // Include the token
+      learnerId: learner._id,
+      email: learner.email,
+      fullName: learner.fullName, // Return additional learner details if required
     });
   } catch (error) {
     res.status(500).json({ status: false, msg: "Error occurred" });
+    console.error("Error in loginLearner:", error); // Log the error for debugging
   }
 }
 

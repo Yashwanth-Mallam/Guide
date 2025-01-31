@@ -77,9 +77,9 @@ const getLearnerProfileById = async (req, res) => {
         "learner", // Reference to Learner model
         "email fullName" // Only populate these fields from the Learner model
       );
-      if (!profile) {
-        return res.status(404).json({ message: "Learner profile not found" });
-      }
+    if (!profile) {
+      return res.status(404).json({ message: "Learner profile not found" });
+    }
 
     res.status(200).json({
       message: "Learner profile fetched successfully",
@@ -93,7 +93,6 @@ const getLearnerProfileById = async (req, res) => {
     });
   }
 };
-
 
 // Update a learner profile
 const updateLearnerProfile = async (req, res) => {
@@ -118,7 +117,6 @@ const updateLearnerProfile = async (req, res) => {
     });
   }
 };
-
 
 // Delete a learner profile
 const deleteLearnerProfile = async (req, res) => {
